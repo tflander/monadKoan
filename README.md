@@ -1,36 +1,41 @@
 Todd's Monad Koan -- The Obligitory Monad Tutorial
 ==================================================
 
-Step 0:
+Step 1:
 -------
 
-  Examine the test MaybeMonadTest.scala:
+OK -- We made our Maybe Monad covariant.  Good job.  It was as simple as typing a plus-sign for the parameterized type:
+
+```scala
+class Maybe[+A]
+```
+  Examine the changes in MaybeMonad.scala:
   
 ```scala
-class MaybeMonadTest extends FunSpec with ShouldMatchers {
-
-  it("Allows you to declare a String as optional") {
-    val stringOrNot: Maybe[String] = Nope
-    stringOrNot should be(Nope)
-  }
-  
+abstract class Maybe[+A] {
+  def get:A
 }
+
+case object Nope extends Maybe[Nothing] {
+  override def get:Nothing = throw new UnsupportedOperationException("You can't get a maybe that doesn't exist")   
+}
+
+In addition to making **Maybe** covariant, we added an abstract **get** method.  This will allow us to get the value of a populated **Maybe**.
+Note the code smell -- **get** is not a valid operation for **Nope**, so we have an interface segregation problem.
+
+```
+  Examine the new broken test in MaybeMonadTest.scala:
+  
+```scala
+  it("Allows you to declare a defined string as optional") {
+    val stringOrNot: Maybe[String] = Gotta("hello")
+    stringOrNot should be(Gotta("hello"))    
+  }
 ```
 Note the error:  
 ```
-type mismatch; found : todd.Nope.type required: todd.Maybe[String] Note: Nothing <: String (and todd.Nope.type <: todd.Maybe[Nothing]), but class Maybe 
- is invariant in type A. You may wish to define A as +A instead. (SLS 4.5)
+not found: value Gotta
 ``` 
-Examine the code under test in MaybeMonad.scala:
+Edit MaybeMonad.scala to define the type **Gotta** as a sub-class of **MayBe**
 
-```scala
-class Maybe[A]
-
-case object Nope extends Maybe[Nothing]
-```
-
-Note that the type Maybe is invariant, so an object of type **Maybe[Nothing]** cannot be assigned to a value of type **Maybe[String]**.
-
-Fix the broken test by making the parameterized type **Maybe[A]** covariant.  This will allow **Maybe[Nothing]** to be considered a sub-type
-of any **Maybe** type, including **Maybe[String]**.
    
