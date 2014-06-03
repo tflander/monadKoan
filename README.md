@@ -20,10 +20,11 @@ case object Nope extends Maybe[Nothing] {
   override def get:Nothing = throw new UnsupportedOperationException("You can't get a maybe that doesn't exist")   
 }
 
-In addition to making **Maybe** covariant, we added an abstract **get** method.  This will allow us to get the 
-value of a populated **Maybe**.
+In addition to making **Maybe** covariant, we added an abstract **get** method.  This will allow 
+us to get the value of a populated **Maybe**.
 
-Note the code smell -- **get** is not a valid operation for **Nope**, so we have an interface segregation problem.
+Note the code smell -- **get** is not a valid operation for **Nope**, so we have an interface 
+segregation problem.
 
 ```
   Examine the new broken test in MaybeMonadTest.scala:
