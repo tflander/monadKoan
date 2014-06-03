@@ -39,6 +39,6 @@ Note the error:
 ```
 not found: value Gotta
 ``` 
-Edit MaybeMonad.scala to define the type **Gotta** as a sub-class of **MayBe**
+Edit MaybeMonad.scala to define the type **Gotta** as a sub-class of **Maybe**
 
    
